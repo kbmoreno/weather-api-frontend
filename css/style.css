@@ -78,8 +78,13 @@ main {
     gap: 2rem;
 }
 
+.report {
+    border: 1px solid var(--color-border);
+}
+
 .report:first-child {
     padding: 2rem 4rem;
+    border: none;
     background-color: inherit;
     color: inherit;
 }
@@ -88,8 +93,13 @@ main {
     display: flex;
     flex-direction: column;
     padding: 2rem;
-    border: 1px solid var(--color-border);
     border-radius: 2rem;
+    border-color: var(--color-border);
+    transition: border-color 0.4s ease-in-out;
+}
+
+.report:nth-child(n+2):hover {
+    border-color: var(--color-tertiary);
 }
 
 .report-title {

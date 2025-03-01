@@ -24,9 +24,11 @@ async function loadLocalWxFcst() {
         return
     }
 
+    hideReports();
     displayWxReport(geo, wx);
     displayPollutReport(ap);
     displayFcstReport(fcst);
+    setTimeout(revealReports, 300);
 }
 
 async function loadSearchedWxFcst(loc) {
@@ -54,10 +56,12 @@ async function loadSearchedWxFcst(loc) {
         return
     }
 
+    hideReports();
     updateSearchDisplay("success", "")
     displayWxReport(geo, wx);
     displayPollutReport(ap);
     displayFcstReport(fcst);
+    setTimeout(revealReports, 500);
 }
 
 async function fetchGeoFromIP() {
@@ -137,6 +141,35 @@ async function fetchWeather(lat, lon) {
     }
 }
 
+async function fetchPollution(lat, lon) {
+    const pollutionEndpoint = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+    try {
+        const response = await fetch(pollutionEndpoint);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+        const jsonData = await response.json();
+        if (!jsonData.list) {
+            return { status: "no data", msg: "No data found."}
+        }
+
+        let ap = getPollutTemplate();
+        ap.aqi = jsonData.list[0].main.aqi;
+        ap.co = jsonData.list[0].components.co;
+        ap.no = jsonData.list[0].components.no;
+        ap.no2 = jsonData.list[0].components.no2;
+        ap.o3 = jsonData.list[0].components.o3;
+        ap.so2 = jsonData.list[0].components.so2;
+        ap.pm2_5 = jsonData.list[0].components.pm2_5;
+        ap.pm10 = jsonData.list[0].components.pm10;
+        ap.nh3  = jsonData.list[0].components.nh3;
+        return ap;
+    } catch (error) {
+        console.error(`Error fetching data from OpenWeatherMap Pollution API: ${error}`);
+        return { status: "error", msg: "An error occured while fetching data." };
+    }
+}
+
 async function fetchForecast(lat, lon) {
     const forecastEndpoint = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
@@ -167,35 +200,6 @@ async function fetchForecast(lat, lon) {
     }
 }
 
-async function fetchPollution(lat, lon) {
-    const pollutionEndpoint = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-
-    try {
-        const response = await fetch(pollutionEndpoint);
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-
-        const jsonData = await response.json();
-        if (!jsonData.list) {
-            return { status: "no data", msg: "No data found."}
-        }
-
-        let ap = getPollutTemplate();
-        ap.aqi = jsonData.list[0].main.aqi;
-        ap.co = jsonData.list[0].components.co;
-        ap.no = jsonData.list[0].components.no;
-        ap.no2 = jsonData.list[0].components.no2;
-        ap.o3 = jsonData.list[0].components.o3;
-        ap.so2 = jsonData.list[0].components.so2;
-        ap.pm2_5 = jsonData.list[0].components.pm2_5;
-        ap.pm10 = jsonData.list[0].components.pm10;
-        ap.nh3  = jsonData.list[0].components.nh3;
-        return ap;
-    } catch (error) {
-        console.error(`Error fetching data from OpenWeatherMap Pollution API: ${error}`);
-        return { status: "error", msg: "An error occured while fetching data." };
-    }
-}
-
 function displayWxReport(geo, wx) {
     const unit = localStorage.getItem("unit");
     const wxIcon = getIconURL(wx.icon);
@@ -213,19 +217,6 @@ function displayWxReport(geo, wx) {
     document.getElementById("visibility").textContent = `${wx.humidity} km`;
 }
 
-function displayFcstReport(fcst) {
-    for (let i = 0; i < fcst.points.length; i++) {
-        j = i + 1;
-
-        const unit = localStorage.getItem("unit");
-        const fcstIcon = getIconURL(fcst.points[i].icon);
-
-        document.getElementById(`fcst-time-${j}`).textContent = getTimeFromTimestamp(fcst.points[i].dt);
-        document.getElementById(`fcst-icon-${j}`).src = fcstIcon;
-        document.getElementById(`fcst-temp-${j}`).textContent = `${fcst.points[i].temp} °${unit.toUpperCase()}`;
-    }
-}
-
 function displayPollutReport(ap) {
     const aqiStatus = getAqiStatus(ap.aqi);
 
@@ -238,6 +229,20 @@ function displayPollutReport(ap) {
     document.getElementById("pollut-pm2_5").textContent = `${ap.pm2_5} μg/m3`;
     document.getElementById("pollut-pm10").textContent = `${ap.pm10} μg/m3`;
     document.getElementById("pollut-nh3").textContent = `${ap.nh3} μg/m3`;
+}
+
+function displayFcstReport(fcst) {
+    for (let i = 0; i < fcst.points.length; i++) {
+        j = i + 1;
+
+        const unit = localStorage.getItem("unit");
+        const fcstIcon = getIconURL(fcst.points[i].icon);
+
+        document.getElementById(`fcst-time-${j}`).textContent = getTimeFromTimestamp(fcst.points[i].dt);
+        document.getElementById(`fcst-icon-${j}`).src = fcstIcon;
+        document.getElementById(`fcst-icon-${j}`).title = fcst.points[i].condition;
+        document.getElementById(`fcst-temp-${j}`).textContent = `${fcst.points[i].temp} °${unit.toUpperCase()}`;
+    }
 }
 
 function getAqiStatus(aqi) {
@@ -316,6 +321,18 @@ function updateTempUnit(unit) {
 
         element.textContent = `${convertedValue} °${unit.toUpperCase()}`;
     });
+}
+
+function revealReports() {
+    const reports = document.querySelector(".reports");
+    reports.classList.remove("hidden");
+    reports.classList.add("visible");
+}
+
+function hideReports() {
+    const reports = document.querySelector(".reports");
+    reports.classList.remove("visible");
+    reports.classList.add("hidden");
 }
 
 
