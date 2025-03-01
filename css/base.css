@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+:root {
+    --color-primary: #A3DAF5;
+    --color-secondary: #7DC4E8;
+    --color-tertiary: #5CADD6;
+    --color-text: #FFFFFF;
+    --color-background: #181A1B;
+    --color-surface1: #252728;
+    --color-surface2: #303436;
+    --color-border: #494D50;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-surface2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-tertiary);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: var(--color-secondary);
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-background);
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Nunito', sans-serif;
+    font-size: 62.5%;
+    color: var(--color-text);
+    line-height: 1;
+    scroll-behavior: smooth;
+}
+
+body {
+    overflow-x: hidden;
+    background-color: var(--color-background);
+}
+
+input {
+    background-color: var(--color-surface2);
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: var(--color-text);
+    border: none;
+}
+
+button {
+    background-color: var(--color-surface2);
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: var(--color-text);
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--color-tertiary);
+}
+
+select {
+    padding: 0.2rem;
+    background-color: var(--color-surface2);
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+}
+
+a {
+    color: #F0F0F0;
+    text-decoration: none;
+}
+
+h1 {
+    font-size: 4.5rem;
+}
+
+h2 {
+    font-size: 3.6rem;
+}
+
+h3 {
+    font-size: 3.2rem;
+}
+
+h4 {
+    font-size: 2.8rem;
+}
+
+h5 {
+    font-size: 2.5rem;
+}
+
+h6 {
+    font-size: 2.2rem;
+}
+
+.color-1 {
+    color: var(--color-primary);
+}
+
+.color-2 {
+    color: var(--color-secondary);
+}
+
+.color-3 {
+    color: var(--color-tertiary);
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0 !important;
+}

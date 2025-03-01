@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta http-equiv="refresh" content="300"> -->
+    <title>OTW Report</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="app-title">
+            <h5 class="color-1">On The Weather</h5>
+            <h5>Report</h5>
+        </div>
+        <div class="search-field">
+            <input  id="search-bar" type="text" placeholder="Search your city here" maxlength="50">
+            <div id="search-err-disp" class="hidden">
+                <p>-</p>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="toggles">
+            <div class="toggle-1">
+                <label for="temp-toggle">Unit of Temperature:</label>
+                <select id="temp-toggle">
+                    <option value="c">°C</option>
+                    <option value="f">°F</option>
+                </select>
+            </div>
+        </section>
+        <section class="reports">
+            <div class="report pri-report">
+                <div class="pri-left">
+                    <div>
+                        <p id="location" class="location color-1">----, --</p>
+                        <p id="condition" class="wx-condition">--</p>
+                    </div>
+                    <div>
+                        <p id="wx-temp" class="temp wx-temp">-- °C</p>
+                    </div>
+                </div>
+                <div class="pri-right">
+                    <img id="wx-icon" class="wx-icon" src="../assets/icons/loading.png">
+                </div>
+            </div>
+            <div class="report sec-report">
+                <div class="report-title">
+                    <img src="../assets/icons/balloon.png">
+                    <p>Weather Conditions</p>
+                </div>
+                <div class="wx-conditions">
+                    <div class="wx-cond">
+                        <div>
+                            <img class="wx-cond-icon" src="../assets/icons/temp.png">
+                            <p>Heat Index</p>
+                        </div>
+                        <p id="heat-index" class="temp">-- °C</p>
+                    </div>
+                    <div class="wx-cond">
+                        <div>
+                            <img class="wx-cond-icon" src="../assets/icons/humidity.png">
+                            <p>Humidity</p>
+                        </div>
+                        <p id="humidity">- %</p>
+                    </div>
+                    <div class="wx-cond">
+                        <div>
+                            <img class="wx-cond-icon" src="../assets/icons/wind_s.png">
+                            <p>Wind Speed</p>
+                        </div>
+                        <p id="speed">- m/s</p>
+                    </div>
+                    <div class="wx-cond">
+                        <div>
+                            <img class="wx-cond-icon" src="../assets/icons/wind_d.png">
+                            <p>Wind Degree</p>
+                        </div>
+                        <p id="degree">- °</p>
+                    </div>
+                    <div class="wx-cond">
+                        <div>
+                            <img class="wx-cond-icon" src="../assets/icons/sunrise.png">
+                            <p>Sunrise</p>
+                        </div>
+                        <p id="sunrise">--:-- --</p>
+                    </div>
+                    <div class="wx-cond">
+                        <div>
+                            <img class="wx-cond-icon" src="../assets/icons/sunset.png">
+                            <p>Sunset</p>
+                        </div>
+                        <p id="sunset">--:-- --</p>
+                    </div>
+                    <div class="wx-cond">
+                        <div>
+                            <img class="wx-cond-icon" src="../assets/icons/visibility.png">
+                            <p>Visibility</p>
+                        </div>
+                        <p id="visibility">- km</p>
+                    </div>
+                </div>
+            </div>
+            <div class="report ap-report">
+                <div class="report-title">
+                    <img src="../assets/icons/pollution.png">
+                    <p>Air Conditions</p>
+                </div>
+                <div class="ap-data">
+                    <div class="ap-aqi">
+                        <p>Air Quality Index (AQI)</p>
+                        <p id="aqi" class="aqi-value">- (-)</p>
+                    </div>
+                    <div class="ap-pollut">
+                        <p class="color-2">Air pollutant concentrations</p>
+                        <div>
+                            <p>Carbon Monoxide (CO):</p>
+                            <p id="pollut-co">- μg/m3</p>
+                        </div>
+                        <div>
+                            <p>Nitrogen Monoxide (NO):</p>
+                            <p id="pollut-no">- μg/m3</p>
+                        </div>
+                        <div>
+                            <p>Nitrogen Dioxide (NO<sub>2</sub>):</p>
+                            <p id="pollut-no2">- μg/m3</p>
+                        </div>
+                        <div>
+                            <p>Oxide (O<sub>3</sub>):</p>
+                            <p id="pollut-o3">- μg/m3</p>
+                        </div>
+                        <div>
+                            <p>Sulfur Dioxide (SO<sub>2</sub>):</p>
+                            <p id="pollut-so2">- μg/m3</p>
+                        </div>
+                        <div>
+                            <p>Fine Particles Matter (PM<sub>2.5</sub>):</p>
+                            <p id="pollut-pm2_5">- μg/m3</p>
+                        </div>
+                        <div>
+                            <p>Coarse Particulate Matter (PM<sub>10</sub>):</p>
+                            <p id="pollut-pm10">- μg/m3</p>
+                        </div>
+                        <div>
+                            <p>Ammonia (NH<sub>3</sub>):</p>
+                            <p id="pollut-nh3">- μg/m3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="report fcst-report">
+                <div class="report-title">
+                    <img src="../assets/icons/clock.png">
+                    <p>24-Hour Forecast</p>
+                </div>
+                <div class="fcst-pts">
+                    <div class="fcst-pt">
+                        <p id="fcst-time-1" class="fcst-time">--:-- --</p>
+                        <img id="fcst-icon-1" class="fcst-icon" src="../assets/icons/loading.png">
+                        <p id="fcst-temp-1" class="temp fcst-temp">-- °C</p>
+                    </div>
+                    <div class="fcst-pt">
+                        <p id="fcst-time-2" class="fcst-time">--:-- --</p>
+                        <img id="fcst-icon-2" class="fcst-icon" src="../assets/icons/loading.png">
+                        <p id="fcst-temp-2" class="temp fcst-temp">-- °C</p>
+                    </div>
+                    <div class="fcst-pt">
+                        <p id="fcst-time-3" class="fcst-time">--:-- --</p>
+                        <img id="fcst-icon-3" class="fcst-icon" src="../assets/icons/loading.png">
+                        <p id="fcst-temp-3" class="temp fcst-temp">-- °C</p>
+                    </div>
+                    <div class="fcst-pt">
+                        <p id="fcst-time-4" class="fcst-time">--:-- --</p>
+                        <img id="fcst-icon-4" class="fcst-icon" src="../assets/icons/loading.png">
+                        <p id="fcst-temp-4" class="temp fcst-temp">-- °C</p>
+                    </div>
+                    <div class="fcst-pt">
+                        <p id="fcst-time-5" class="fcst-time">--:-- --</p>
+                        <img id="fcst-icon-5" class="fcst-icon" src="../assets/icons/loading.png">
+                        <p id="fcst-temp-5" class="temp fcst-temp">-- °C</p>
+                    </div>
+                    <div class="fcst-pt">
+                        <p id="fcst-time-6" class="fcst-time">--:-- --</p>
+                        <img id="fcst-icon-6" class="fcst-icon" src="../assets/icons/loading.png">
+                        <p id="fcst-temp-6" class="temp fcst-temp">-- °C</p>
+                    </div>
+                    <div class="fcst-pt">
+                        <p id="fcst-time-7" class="fcst-time">--:-- --</p>
+                        <img id="fcst-icon-7" class="fcst-icon" src="../assets/icons/loading.png">
+                        <p id="fcst-temp-7" class="temp fcst-temp">-- °C</p>
+                    </div>
+                    <div class="fcst-pt">
+                        <p id="fcst-time-8" class="fcst-time">--:-- --</p>
+                        <img id="fcst-icon-8" class="fcst-icon" src="../assets/icons/loading.png">
+                        <p id="fcst-temp-8" class="temp fcst-temp">-- °C</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <a class="sec" href="https://www.flaticon.com/free-icons/loader" title="Flaticon">Icons created by Freepik - Flaticon</a>
+    </footer>
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
