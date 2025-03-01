@@ -187,6 +187,7 @@ async function fetchForecast(lat, lon) {
             if (i < jsonData.list.length) {
                 fcst.points[i].dt = jsonData.list[i].dt;
                 fcst.points[i].condition = jsonData.list[i].weather[0].main;
+                fcst.points[i].description = toTitleCase(jsonData.list[i].weather[0].description);
                 fcst.points[i].icon = jsonData.list[i].weather[0].icon;
                 fcst.points[i].temp = convertKelvin(jsonData.list[i].main.temp);
             }            
@@ -241,6 +242,7 @@ function displayFcstReport(fcst) {
         document.getElementById(`fcst-time-${j}`).textContent = getTimeFromTimestamp(fcst.points[i].dt);
         document.getElementById(`fcst-icon-${j}`).src = fcstIcon;
         document.getElementById(`fcst-icon-${j}`).title = fcst.points[i].condition;
+        document.getElementById(`fcst-desc-${j}`).textContent = fcst.points[i].description
         document.getElementById(`fcst-temp-${j}`).textContent = `${fcst.points[i].temp} °${unit.toUpperCase()}`;
     }
 }
