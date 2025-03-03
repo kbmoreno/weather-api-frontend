@@ -28,7 +28,7 @@ async function loadLocalWxFcst() {
     displayWxReport(geo, wx);
     displayPollutReport(ap);
     displayFcstReport(fcst);
-    setTimeout(revealReports, 300);
+    setTimeout(revealReports, 500);
 }
 
 async function loadSearchedWxFcst(loc) {
@@ -105,11 +105,13 @@ async function fetchGeoFromName(loc) {
         return geo;
     } catch (error) {
         console.error(`Error fetching data from OpenWeatherMap Geo API: ${error}`);
-        return { status: "error", msg: "An error occurred while fetching data." };
+        return { status: "error", msg: "An error occurred. Try again later." };
     }
 }
 
 async function fetchWeather(lat, lon) {
+    const measSys = localStorage.getItem("measSys");
+
     const weatherEndpoint = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
     try {
@@ -125,15 +127,15 @@ async function fetchWeather(lat, lon) {
         wx.condition = jsonData.weather[0].main;
         wx.description = toTitleCase(jsonData.weather[0].description);
         wx.icon = jsonData.weather[0].icon;
-        wx.temp = convertKelvin(jsonData.main.temp);
-        wx.heatIndex = convertKelvin(jsonData.main.feels_like);
-        wx.humidity = jsonData.main.humidity;
-        wx.visibility = jsonData.visibility;
-        wx.windSpeed = jsonData.wind.speed;
-        wx.windDegree = jsonData.wind.deg;
-        wx.dt = jsonData.dt;
-        wx.sunrise = jsonData.sys.sunrise;
-        wx.sunset = jsonData.sys.sunset;
+        wx.temp = `${jsonData.main.temp} °K`;
+        wx.heatIndex = `${jsonData.main.feels_like} °K`;
+        wx.humidity = `${jsonData.main.humidity} %`;
+        wx.visibility = jsonData.visibility >= 1000 ? `${jsonData.visibility/1000} km` : `${jsonData.visibility} m`;
+        wx.windSpeed = `${jsonData.wind.speed} m/sec`;
+        wx.windDegree = `${jsonData.wind.deg} °`;
+        wx.dt = `${getDateFromTimestamp(jsonData.dt)} ${getTimeFromTimestamp}`;
+        wx.sunrise = getTimeFromTimestamp(jsonData.sys.sunrise);
+        wx.sunset = getTimeFromTimestamp(jsonData.sys.sunset);
         return wx;
     } catch (error) {
         console.error(`Error fetching data from OpenWeatherMap Current API: ${error}`);
@@ -155,14 +157,14 @@ async function fetchPollution(lat, lon) {
 
         let ap = getPollutTemplate();
         ap.aqi = jsonData.list[0].main.aqi;
-        ap.co = jsonData.list[0].components.co;
-        ap.no = jsonData.list[0].components.no;
-        ap.no2 = jsonData.list[0].components.no2;
-        ap.o3 = jsonData.list[0].components.o3;
-        ap.so2 = jsonData.list[0].components.so2;
-        ap.pm2_5 = jsonData.list[0].components.pm2_5;
-        ap.pm10 = jsonData.list[0].components.pm10;
-        ap.nh3  = jsonData.list[0].components.nh3;
+        ap.co = jsonData.list[0].components.co + " μg/m3";
+        ap.no = jsonData.list[0].components.no + " μg/m3";
+        ap.no2 = jsonData.list[0].components.no2 + " μg/m3";
+        ap.o3 = jsonData.list[0].components.o3 + " μg/m3";
+        ap.so2 = jsonData.list[0].components.so2 + " μg/m3";
+        ap.pm2_5 = jsonData.list[0].components.pm2_5 + " μg/m3";
+        ap.pm10 = jsonData.list[0].components.pm10 + " μg/m3";
+        ap.nh3  = jsonData.list[0].components.nh3 + " μg/m3";
         return ap;
     } catch (error) {
         console.error(`Error fetching data from OpenWeatherMap Pollution API: ${error}`);
@@ -185,15 +187,15 @@ async function fetchForecast(lat, lon) {
         let fcst = getFcstTemplate();
         for (let i = 0; i < fcst.points.length; i++) {
             if (i < jsonData.list.length) {
-                fcst.points[i].dt = jsonData.list[i].dt;
+                fcst.points[i].time = getTimeFromTimestamp(jsonData.list[i].dt);
                 fcst.points[i].condition = jsonData.list[i].weather[0].main;
                 fcst.points[i].description = toTitleCase(jsonData.list[i].weather[0].description);
                 fcst.points[i].icon = jsonData.list[i].weather[0].icon;
-                fcst.points[i].temp = convertKelvin(jsonData.list[i].main.temp);
+                fcst.points[i].temp = jsonData.list[i].main.temp + " °K";
             }            
         }
-        fcst.timeStart = fcst.points[0]?.dt ?? null;
-        fcst.timeEnd = fcst.points[fcst.points.length - 1]?.dt ?? null;
+        fcst.timeStart = fcst.points[0]?.time ?? null;
+        fcst.timeEnd = fcst.points[fcst.points.length - 1]?.time ?? null;
         return fcst;
     } catch (error) {
         console.error(`Error fetching data from OpenWeatherMap Forecast API: ${error}`);
@@ -202,49 +204,33 @@ async function fetchForecast(lat, lon) {
 }
 
 function displayWxReport(geo, wx) {
-    const unit = localStorage.getItem("unit");
-    const wxIcon = getIconURL(wx.icon);
+    const measSys = localStorage.getItem("measSys");
+
+    const wxIconURL = getIconURL(wx.icon);
 
     document.getElementById("location").textContent = `${geo.city}, ${geo.countryCode}`;
     document.getElementById("condition").textContent = wx.description;
-    document.getElementById("wx-temp").textContent = `${wx.temp} °${unit.toUpperCase()}`;
-    document.getElementById("wx-icon").src = wxIcon;
-    document.getElementById("heat-index").textContent = `${wx.heatIndex} °${unit.toUpperCase()}`;
-    document.getElementById("humidity").textContent = `${wx.humidity} %`;
-    document.getElementById("speed").textContent = `${wx.windSpeed} m/s`;
-    document.getElementById("degree").textContent = `${wx.windDegree} °`;
-    document.getElementById("sunrise").textContent = getTimeFromTimestamp(wx.sunrise);
-    document.getElementById("sunset").textContent = getTimeFromTimestamp(wx.sunset);
-    document.getElementById("visibility").textContent = `${wx.humidity} km`;
+    document.getElementById("wx-temp").textContent = updateMeasText(wx.temp, measSys);
+    document.getElementById("wx-icon").src = wxIconURL;
+    document.getElementById("heat-index").textContent = updateMeasText(wx.heatIndex, measSys);
+    document.getElementById("humidity").textContent = wx.humidity;
+    document.getElementById("speed").textContent = updateMeasText(wx.windSpeed, measSys);
+    document.getElementById("degree").textContent = wx.windDegree;
+    document.getElementById("sunrise").textContent = wx.sunrise;
+    document.getElementById("sunset").textContent = wx.sunset;
+    document.getElementById("visibility").textContent = updateMeasText(wx.visibility, measSys);
 }
 
 function displayPollutReport(ap) {
-    const aqiStatus = getAqiStatus(ap.aqi);
-
-    document.getElementById("aqi").textContent = `${ap.aqi} (${aqiStatus})`;
-    document.getElementById("pollut-co").textContent = `${ap.co} μg/m3`;
-    document.getElementById("pollut-no").textContent = `${ap.no} μg/m3`;
-    document.getElementById("pollut-no2").textContent = `${ap.no2} μg/m3`;
-    document.getElementById("pollut-o3").textContent = `${ap.o3} μg/m3`;
-    document.getElementById("pollut-so2").textContent = `${ap.so2} μg/m3`;
-    document.getElementById("pollut-pm2_5").textContent = `${ap.pm2_5} μg/m3`;
-    document.getElementById("pollut-pm10").textContent = `${ap.pm10} μg/m3`;
-    document.getElementById("pollut-nh3").textContent = `${ap.nh3} μg/m3`;
-}
-
-function displayFcstReport(fcst) {
-    for (let i = 0; i < fcst.points.length; i++) {
-        j = i + 1;
-
-        const unit = localStorage.getItem("unit");
-        const fcstIcon = getIconURL(fcst.points[i].icon);
-
-        document.getElementById(`fcst-time-${j}`).textContent = getTimeFromTimestamp(fcst.points[i].dt);
-        document.getElementById(`fcst-icon-${j}`).src = fcstIcon;
-        document.getElementById(`fcst-icon-${j}`).title = fcst.points[i].condition;
-        document.getElementById(`fcst-desc-${j}`).textContent = fcst.points[i].description
-        document.getElementById(`fcst-temp-${j}`).textContent = `${fcst.points[i].temp} °${unit.toUpperCase()}`;
-    }
+    document.getElementById("aqi").textContent = `${ap.aqi} (${getAqiStatus(ap.aqi)})`;
+    document.getElementById("pollut-co").textContent = ap.co;
+    document.getElementById("pollut-no").textContent = ap.no;
+    document.getElementById("pollut-no2").textContent = ap.no2;
+    document.getElementById("pollut-o3").textContent = ap.o3;
+    document.getElementById("pollut-so2").textContent = ap.so2;
+    document.getElementById("pollut-pm2_5").textContent = ap.pm2_5;
+    document.getElementById("pollut-pm10").textContent = ap.pm10;
+    document.getElementById("pollut-nh3").textContent = ap.nh3;
 }
 
 function getAqiStatus(aqi) {
@@ -264,26 +250,25 @@ function getAqiStatus(aqi) {
     }
 }
 
-function updateSearchDisplay(status, msg) {
-    let searchDisplay = document.getElementById("search-err-disp");
+function displayFcstReport(fcst) {
+    const measSys = localStorage.getItem("measSys");
 
-    if (status == "error") {
-        searchDisplay.textContent = msg;
-        searchDisplay.classList.remove("hidden");
-        return;
-    } else if (status == "no data") {
-        searchDisplay.textContent = msg;
-        searchDisplay.classList.remove("hidden");
-        return;
+    for (let i = 0; i < fcst.points.length; i++) {
+        j = i + 1;
+
+        const fcstIconURL = getIconURL(fcst.points[i].icon);
+
+        document.getElementById(`fcst-time-${j}`).textContent = fcst.points[i].dt;
+        document.getElementById(`fcst-icon-${j}`).src = fcstIconURL;
+        document.getElementById(`fcst-icon-${j}`).title = fcst.points[i].condition;
+        document.getElementById(`fcst-desc-${j}`).textContent = fcst.points[i].description
+        document.getElementById(`fcst-temp-${j}`).textContent = updateMeasText(fcst.points[i].temp);
     }
-
-    searchDisplay.textContent = "";
-    searchDisplay.classList.add("hidden");
 }
 
-// 
-// 
-// 
+//
+//
+//
 
 async function findSearchedLocation() {
     const query = document.getElementById("search-bar").value;
@@ -303,26 +288,82 @@ async function findSearchedLocation() {
     document.getElementById("search-bar").value = "";
 }
 
-function updateTempUnit(unit) {
-    console.log(unit);
-    localStorage.setItem("unit", unit.toLowerCase() || "c");
+function updateSearchDisplay(status, msg) {
+    const root = document.querySelector(":root");
+    const rs = getComputedStyle(root);
 
-    let tempElements = document.getElementsByClassName("temp");
+    let searchDisplay = document.getElementById("search-err-disp");
 
-    Array.from(tempElements).forEach(element => {
-        let tempValue = parseFloat(element.textContent.replace(/[^\d.-]/g, ""));
+    if (status == "error") {
+        searchDisplay.textContent = msg;
+        searchDisplay.style.color = rs.getPropertyValue("--color-error1");
+        searchDisplay.classList.remove("hidden");
+        return;
+    } else if (status == "no data") {
+        searchDisplay.textContent = msg;
+        searchDisplay.style.color = rs.getPropertyValue("--color-error2");
+        searchDisplay.classList.remove("hidden");
+        return;
+    }
 
-        if (isNaN(tempValue)) {
-            element.textContent = `-- °${unit.toUpperCase()}`;
+    searchDisplay.textContent = "";
+    searchDisplay.classList.add("hidden");
+}
+
+function updateMeasurementSystem(measSys) {
+    let newMeasSys;
+
+    switch (measSys) {
+        case "imp":
+        case "si":
+        case "met":
+            newMeasSys = measSys;
+            break;
+        default:
             return;
-        }
+    }
 
-        let convertedValue = unit === "f" 
-            ? celsiusToFahrenheit(tempValue) 
-            : fahrenheitToCelsius(tempValue);
+    if (newMeasSys == localStorage.getItem("measSys")) return;
+    
+    localStorage.setItem("measSys", newMeasSys);
+    
+    let measElements = document.getElementsByClassName("measElement");
 
-        element.textContent = `${convertedValue} °${unit.toUpperCase()}`;
+    Array.from(measElements).forEach(element => {
+        let text = element.textContent;
+        text = updateMeasText(text, newMeasSys);
+        element.textContent = text;
     });
+}
+
+function updateMeasText(text, measSys) {
+    const numRegex = /-?\d+(\.\d+)?/;
+    const unitRegex = /(°)?(mi|ft|km|m|F|K|C)(\.)?/;
+
+    const matchedValue = text.match(numRegex);
+    const matchedUnit = text.match(unitRegex);
+
+    if (!matchedValue && !matchedUnit) return text;
+
+    let num = parseFloat(matchedValue[0]);
+    let [, degreeSymbol, unit, period] = matchedUnit;
+
+    switch (measSys) {
+        case "imp":
+            ({num, unit} = convertToImperial(num, unit));
+            break;
+        case "si":
+            ({num, unit} = convertToSI(num, unit));
+            break;
+        case "met":
+            ({num, unit} = convertToMetric(num, unit));
+            break;
+    }
+
+    // Removes unnecessary decimals
+    num = Number.isInteger(num) ? num.toFixed(0) : num.toFixed(2);
+    
+    return text.replace(numRegex, num).replace(unitRegex, `${degreeSymbol || ""}${unit}${period || ""}`);
 }
 
 function revealReports() {
@@ -337,13 +378,15 @@ function hideReports() {
     reports.classList.add("hidden");
 }
 
-
 document.getElementById("search-bar").addEventListener("keydown", (event) => {
     if (event.key === "Enter") findSearchedLocation();
 });
 
-document.getElementById("temp-toggle").addEventListener("change", (event) => {
-    updateTempUnit(event.target.value);
+document.getElementById("measSys-toggle").addEventListener("change", (event) => {
+    updateMeasurementSystem(event.target.value);
 });
 
-window.addEventListener("load", loadLocalWxFcst());
+window.addEventListener("load", () => {
+    localStorage.setItem("measSys", "met");
+    loadLocalWxFcst();
+})

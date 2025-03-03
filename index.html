@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <meta http-equiv="refresh" content="300"> -->
+    <meta http-equiv="refresh" content="600">
     <title>OTW Report</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -21,12 +21,13 @@
         </div>
     </header>
     <main>
-        <section class="toggles">
+        <section class="toggle-tray">
             <div class="toggle-1">
-                <label for="temp-toggle">Unit of Temperature:</label>
-                <select id="temp-toggle">
-                    <option value="c">°C</option>
-                    <option value="f">°F</option>
+                <label for="measSys-toggle">Measurement System:</label>
+                <select id="measSys-toggle">
+                    <option value="met">Metric System</option>
+                    <option value="imp">Imperial System</option>
+                    <option value="si">SI System</option>
                 </select>
             </div>
         </section>
@@ -38,7 +39,7 @@
                         <p id="condition" class="wx-condition">--</p>
                     </div>
                     <div>
-                        <p id="wx-temp" class="temp wx-temp">-- °C</p>
+                        <p id="wx-temp" class="wx-temp measElement">-- --</p>
                     </div>
                 </div>
                 <div class="pri-right">
@@ -56,28 +57,28 @@
                             <img class="wx-cond-icon" src="../assets/icons/temp.png">
                             <p>Heat Index</p>
                         </div>
-                        <p id="heat-index" class="temp">-- °C</p>
+                        <p id="heat-index" class="measElement">-- --</p>
                     </div>
                     <div class="wx-cond">
                         <div>
                             <img class="wx-cond-icon" src="../assets/icons/humidity.png">
                             <p>Humidity</p>
                         </div>
-                        <p id="humidity">- %</p>
+                        <p id="humidity">-- -</p>
                     </div>
                     <div class="wx-cond">
                         <div>
                             <img class="wx-cond-icon" src="../assets/icons/wind_s.png">
                             <p>Wind Speed</p>
                         </div>
-                        <p id="speed">- m/s</p>
+                        <p id="speed" class="measElement">-- ---</p>
                     </div>
                     <div class="wx-cond">
                         <div>
                             <img class="wx-cond-icon" src="../assets/icons/wind_d.png">
                             <p>Wind Degree</p>
                         </div>
-                        <p id="degree">- °</p>
+                        <p id="degree">-- -</p>
                     </div>
                     <div class="wx-cond">
                         <div>
@@ -98,7 +99,7 @@
                             <img class="wx-cond-icon" src="../assets/icons/visibility.png">
                             <p>Visibility</p>
                         </div>
-                        <p id="visibility">- km</p>
+                        <p id="visibility" class="measElement">-- --</p>
                     </div>
                 </div>
             </div>
@@ -110,41 +111,41 @@
                 <div class="ap-data">
                     <div class="ap-aqi">
                         <p>Air Quality Index (AQI)</p>
-                        <p id="aqi" class="aqi-value">- (-)</p>
+                        <p id="aqi" class="aqi-value">- (--)</p>
                     </div>
                     <div class="ap-pollut">
                         <p class="color-2">Air pollutant concentrations</p>
                         <div>
                             <p>Carbon Monoxide (CO):</p>
-                            <p id="pollut-co">- μg/m3</p>
+                            <p id="pollut-co">-- μg/m3</p>
                         </div>
                         <div>
                             <p>Nitrogen Monoxide (NO):</p>
-                            <p id="pollut-no">- μg/m3</p>
+                            <p id="pollut-no">-- μg/m3</p>
                         </div>
                         <div>
                             <p>Nitrogen Dioxide (NO<sub>2</sub>):</p>
-                            <p id="pollut-no2">- μg/m3</p>
+                            <p id="pollut-no2">-- μg/m3</p>
                         </div>
                         <div>
                             <p>Oxide (O<sub>3</sub>):</p>
-                            <p id="pollut-o3">- μg/m3</p>
+                            <p id="pollut-o3">-- μg/m3</p>
                         </div>
                         <div>
                             <p>Sulfur Dioxide (SO<sub>2</sub>):</p>
-                            <p id="pollut-so2">- μg/m3</p>
+                            <p id="pollut-so2">-- μg/m3</p>
                         </div>
                         <div>
                             <p>Fine Particles Matter (PM<sub>2.5</sub>):</p>
-                            <p id="pollut-pm2_5">- μg/m3</p>
+                            <p id="pollut-pm2_5">-- μg/m3</p>
                         </div>
                         <div>
                             <p>Coarse Particulate Matter (PM<sub>10</sub>):</p>
-                            <p id="pollut-pm10">- μg/m3</p>
+                            <p id="pollut-pm10">-- μg/m3</p>
                         </div>
                         <div>
                             <p>Ammonia (NH<sub>3</sub>):</p>
-                            <p id="pollut-nh3">- μg/m3</p>
+                            <p id="pollut-nh3">-- μg/m3</p>
                         </div>
                     </div>
                 </div>
@@ -160,7 +161,7 @@
                         <img id="fcst-icon-1" class="fcst-icon" src="../assets/icons/loading.png">
                         <div class="fcst-pt-dets">
                             <p id="fcst-desc-1" class="fcst-desc">--</p>
-                            <p id="fcst-temp-1" class="temp fcst-temp">-- °C</p>
+                            <p id="fcst-temp-1" class="fcst-temp measElement">-- --</p>
                         </div>
                     </div>
                     <div class="fcst-pt">
@@ -168,7 +169,7 @@
                         <img id="fcst-icon-2" class="fcst-icon" src="../assets/icons/loading.png">
                         <div class="fcst-pt-dets">
                             <p id="fcst-desc-2" class="fcst-desc">--</p>
-                            <p id="fcst-temp-2" class="temp fcst-temp">-- °C</p>
+                            <p id="fcst-temp-2" class="fcst-temp measElement">-- --</p>
                         </div>
                     </div>
                     <div class="fcst-pt">
@@ -176,7 +177,7 @@
                         <img id="fcst-icon-3" class="fcst-icon" src="../assets/icons/loading.png">
                         <div class="fcst-pt-dets">
                             <p id="fcst-desc-3" class="fcst-desc">--</p>
-                            <p id="fcst-temp-3" class="temp fcst-temp">-- °C</p>
+                            <p id="fcst-temp-3" class="fcst-temp measElement">-- --</p>
                         </div>
                     </div>
                     <div class="fcst-pt">
@@ -184,7 +185,7 @@
                         <img id="fcst-icon-4" class="fcst-icon" src="../assets/icons/loading.png">
                         <div class="fcst-pt-dets">
                             <p id="fcst-desc-4" class="fcst-desc">--</p>
-                            <p id="fcst-temp-4" class="temp fcst-temp">-- °C</p>
+                            <p id="fcst-temp-4" class="fcst-temp measElement">-- --</p>
                         </div>
                     </div>
                     <div class="fcst-pt">
@@ -192,7 +193,7 @@
                         <img id="fcst-icon-5" class="fcst-icon" src="../assets/icons/loading.png">
                         <div class="fcst-pt-dets">
                             <p id="fcst-desc-5" class="fcst-desc">--</p>
-                            <p id="fcst-temp-5" class="temp fcst-temp">-- °C</p>
+                            <p id="fcst-temp-5" class="fcst-temp measElement">-- --</p>
                         </div>
                     </div>
                     <div class="fcst-pt">
@@ -200,7 +201,7 @@
                         <img id="fcst-icon-6" class="fcst-icon" src="../assets/icons/loading.png">
                         <div class="fcst-pt-dets">
                             <p id="fcst-desc-6" class="fcst-desc">--</p>
-                            <p id="fcst-temp-6" class="temp fcst-temp">-- °C</p>
+                            <p id="fcst-temp-6" class="fcst-temp measElement">-- --</p>
                         </div>
                     </div>
                     <div class="fcst-pt">
@@ -208,7 +209,7 @@
                         <img id="fcst-icon-7" class="fcst-icon" src="../assets/icons/loading.png">
                         <div class="fcst-pt-dets">
                             <p id="fcst-desc-7" class="fcst-desc">--</p>
-                            <p id="fcst-temp-7" class="temp fcst-temp">-- °C</p>
+                            <p id="fcst-temp-7" class="fcst-temp measElement">-- --</p>
                         </div>
                     </div>
                     <div class="fcst-pt">
@@ -216,7 +217,7 @@
                         <img id="fcst-icon-8" class="fcst-icon" src="../assets/icons/loading.png">
                         <div class="fcst-pt-dets">
                             <p id="fcst-desc-8" class="fcst-desc">--</p>
-                            <p id="fcst-temp-8" class="temp fcst-temp">-- °C</p>
+                            <p id="fcst-temp-8" class="fcst-temp measElement">-- --</p>
                         </div>
                     </div>
                 </div>

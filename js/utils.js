@@ -30,56 +30,56 @@ function getFcstTemplate() {
         timeEnd: null,
         points: [    
             {
-                dt: null,
+                time: null,
                 condition: null,
                 description: null,
                 icon: null,
                 temp: null,
             },
             {
-                dt: null,
+                time: null,
                 condition: null,
                 description: null,
                 icon: null,
                 temp: null,
             },
             {
-                dt: null,
+                time: null,
                 condition: null,
                 description: null,
                 icon: null,
                 temp: null,
             },
             {
-                dt: null,
+                time: null,
                 condition: null,
                 description: null,
                 icon: null,
                 temp: null,
             },
             {
-                dt: null,
+                time: null,
                 condition: null,
                 description: null,
                 icon: null,
                 temp: null,
             },
             {
-                dt: null,
+                time: null,
                 condition: null,
                 description: null,
                 icon: null,
                 temp: null,
             },
             {
-                dt: null,
+                time: null,
                 condition: null,
                 description: null,
                 icon: null,
                 temp: null,
             },
             {
-                dt: null,
+                time: null,
                 condition: null,
                 description: null,
                 icon: null,
@@ -111,38 +111,6 @@ function toTitleCase(str) {
         .join(" ");
 }
 
-function convertKelvin(k) {
-    if (typeof k != "number" || k < 0) {
-        console.error(`Conversion error. Invalid Kelvin value: ${k}.`);
-        return 0;
-    }
-
-    let tempUnit = localStorage.getItem("unit");
-    switch (tempUnit) {
-        case "c":
-            return (k - 273.15).toFixed(1);
-        case "f":
-            return ((k - 273.15) * 9 / 5 + 32).toFixed(1);
-        default:
-            return (k - 273.15).toFixed(1);
-    }
-}
-
-function kelvinToCelsius(k) {
-    return (k - 273.15).toFixed(1);
-}
-
-function kelvinToFahrenheit(k) {
-    return ((k - 273.15) * 9/5 + 32).toFixed(1);
-}
-
-function celsiusToFahrenheit(c) {
-    return ((c * 9/5) + 32).toFixed(1);
-}
-
-function fahrenheitToCelsius(f) {
-    return ((f - 32) * 5/9).toFixed(1);
-}
 function getIconURL(code) {
     const validCodes = [
         "01d", "01n", "02d", "02n", "03d", "03n", "04d", "04n", 
@@ -178,4 +146,80 @@ function getTimeFromTimestamp(timestamp) {
     minutes = minutes.toString().padStart(2, '0'); // Ensure two-digit minutes
 
     return `${hours}:${minutes} ${ampm}`;
+}
+
+function convertToImperial(num, unit) {
+    switch (unit) {
+        case "km":  // kilometers to miles
+            num *= 0.621371;
+            unit = "mi";
+            break;
+        case "m":   // meters to feet
+            num *= 3.28084;
+            unit = "ft";
+            break;
+        case "K":   // kelvin to fahrenheit
+            num = (num - 273.15) * 9/5 + 32;
+            unit = "F";
+            break;
+        case "C":   // celcius to fahrenheit
+            num = num * 9/5 + 32;
+            unit = "F";
+            break;
+        default:
+            break;
+    }
+    return { num, unit };
+}
+
+function convertToSI(num, unit) {
+    switch (unit) {
+        case "mi":  // miles to kilometers
+            num *= 1.60934;
+            unit = "km";
+            break;
+        case "ft":  // feet to meters
+            num *= 0.3048;
+            unit = "m";
+            break;
+        case "F":   // fahrenheit to kelvin
+            num = (num - 32) * 5/9 + 273.15;
+            unit = "K";
+            break;
+        case "C":   // celsius to kelvin
+            num += 273.15;
+            unit = "K";
+            break;
+        case "km":  // | no conversion needed
+        case "m":   // |
+        default:
+            break;
+    }
+    return { num, unit };
+}
+
+function convertToMetric(num, unit) {
+    switch (unit) {
+        case "mi":  // miles to kilometers
+            num *= 1.60934;
+            unit = "km";
+            break;
+        case "ft":  // feet to meters
+            num *= 0.3048;
+            unit = "m";
+            break;
+        case "F":   // fahrenheit to celsius
+            num = (num - 32) * 5/9;
+            unit = "C";
+            break;
+        case "K":   // kelvin to celsius
+            num -= 273.15;
+            unit = "C";
+            break;
+        case "km":  // | no conversion needed
+        case "m":   // |
+        default:
+            break;
+    }
+    return { num, unit };
 }

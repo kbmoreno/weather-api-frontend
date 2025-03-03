@@ -1,14 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 :root {
-    --color-primary: #A3DAF5;
-    --color-secondary: #7DC4E8;
-    --color-tertiary: #5CADD6;
+    --color-primary: #3DC7F5;
+    --color-secondary: #13B6EC;
+    --color-tertiary: #148FB8;
     --color-text: #FFFFFF;
-    --color-background: #181A1B;
-    --color-surface1: #252728;
-    --color-surface2: #303436;
-    --color-border: #494D50;
+    --color-background: #14141C;
+    --color-surface1: #202028;
+    --color-surface2: #2C2C34;
+    --color-border: #505058;
+    --color-error1: #FF0020;
+    --color-error2: #FFA020;
 }
 
 ::-webkit-scrollbar {
